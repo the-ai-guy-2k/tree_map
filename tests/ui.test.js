@@ -37,6 +37,7 @@ test('page loads and the tree renders', async ({ page }) => {
     await expect(page.locator(`.node[data-id="${id}"]`)).toHaveCount(1);
   }
   expect(await page.locator('.node').count()).toBeGreaterThanOrEqual(5);
+  await expect(page.locator('#sync')).toBeVisible();
 });
 
 test('node boxes do not overlap', async ({ page }) => {
