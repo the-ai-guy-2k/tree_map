@@ -1,0 +1,1 @@
+{"dependencies":{"express":"^4.19.2"},"description":"TAIG Tree Map Live — Sanil's tree-map UI backed by a real SQLite database. Notes, statuses, labels and structure all persist.","engines":{"node":">=22"},"license":"UNLICENSED","main":"server.js","name":"taig-tree-map-live","private":true,"scripts":{"start":"node server.js"},"version":"1.0.0"}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TAIG Tree Map Live</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-title">TAIG Tree Map <span class="live-dot">● LIVE</span></div>
+    <div class="brand-sub">Sanil's UI — every change saves to the database</div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-focus="all" class="tab active">Overview</button>
+    <button data-focus="its" class="tab">TAIG ITS</button>
+    <button data-focus="promo" class="tab">TAIG Promo</button>
+    <button data-focus="tan" class="tab">TAIG TAN</button>
+    <button data-focus="cott" class="tab">COTT</button>
+  </nav>
+  <div class="tools">
+    <input id="search" type="search" placeholder="Search the map — try “Jay”, “Eagle”…" autocomplete="off">
+    <button id="fitBtn" title="Fit map to screen">Fit</button>
+    <button id="expandBtn" title="Expand all branches">Expand all</button>
+    <button id="foldBtn" title="Fold to domains">Fold</button>
+  </div>
+</header>
+
+<main class="stage">
+  <svg id="map" aria-label="TAIG tree map"></svg>
+
+  <div class="legend" id="legend">
+    <strong>How to read it — bottom up</strong>
+    <div class="legend-rows" id="legendRows"></div>
+    <div class="legend-note">Drag to pan · scroll to zoom · click a bubble for detail · TODAY tags clear on their own each day</div>
+  </div>
+
+  <aside class="panel hidden" id="panel" aria-label="Bubble detail">
+    <button class="panel-close" id="panelClose" title="Close">×</button>
+    <div class="panel-eyebrow" id="pEyebrow">BRANCH</div>
+    <input class="p-title" id="pLabel" value="" aria-label="Bubble label">
+    <div class="p-path" id="pPath"></div>
+    <div class="p-today hidden" id="pToday">● WORKED ON TODAY</div>
+    <label class="p-field"><span>Sub-line</span>
+      <input id="pSub" value="" placeholder="one-line detail…">
+    </label>
+    <div class="p-field"><span>Status</span>
+      <div class="status-row" id="pStatus">
+        <button data-status="active" title="Active"><i class="dot active"></i>Active</button>
+        <button data-status="waiting" title="Waiting"><i class="dot waiting"></i>Waiting</button>
+        <button data-status="done" title="Done"><i class="dot done"></i>Done</button>
+        <button data-status="blocked" title="Blocked"><i class="dot blocked"></i>Blocked</button>
+        <button data-status="" title="Clear">Clear</button>
+      </div>
+    </div>
+    <label class="p-field"><span>Branch color</span>
+      <select id="pBranch"></select>
+    </label>
+    <label class="p-field"><span>Note on this bubble <em class="sess">— saved to database</em></span>
+      <textarea id="pNote" rows="3" placeholder="jot a note…"></textarea>
+    </label>
+    <div class="p-meta" id="pMeta"></div>
+    <div class="p-actions">
+      <button id="pAddChild">＋ Add child bubble</button>
+      <button id="pFold">Fold / unfold branch</button>
+      <button id="pDelete" class="danger">Delete bubble</button>
+    </div>
+  </aside>
+
+  <div class="toast hidden" id="toast"></div>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
