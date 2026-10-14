@@ -7,7 +7,9 @@ const { DatabaseSync } = require('node:sqlite');
 
 const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(__dirname, 'data');
-const DB_PATH = path.join(DATA_DIR, 'tree.db');
+const DB_PATH = process.env.TREE_DB
+  ? path.resolve(process.env.TREE_DB)
+  : path.join(DATA_DIR, 'tree.db');
 
 const BRANCHES = new Set([
   'nebula', 'its', 'taig2k', 'services', 'duval', 'funding', 'clients',
@@ -15,7 +17,7 @@ const BRANCHES = new Set([
 ]);
 const STATUSES = new Set(['active', 'waiting', 'done', 'blocked', 'none']);
 
-fs.mkdirSync(DATA_DIR, { recursive: true });
+fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
 const db = new DatabaseSync(DB_PATH);
 
 db.exec(`
@@ -93,6 +95,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 function readBubble(id) {
   return db.prepare('SELECT * FROM bubbles WHERE id = ?').get(id);
 }
+
+app.get('/favicon.ico', (req, res) => {
+  res.status(204).end();
+});
 
 app.get('/api/health', (req, res) => {
   res.json({ ok: true, time: new Date().toISOString() });
