@@ -15,6 +15,8 @@ npm start
 
 Open http://localhost:3000
 
+`npm test` runs the API suite and then the headless UI suite. It starts and stops its own server on a temporary database, so it does not touch `data/tree.db`. The first run downloads Playwright's Chromium.
+
 The database is created on first run at `data/tree.db` and seeded from `seed.json`
 (the seed only runs when the database is empty — your edits are never overwritten).
 
@@ -30,6 +32,20 @@ Import from GitHub → select repo → branch `deployable` → Run.
 
 > Note: make sure the Replit account's billing is current — an unpaid/suspended
 > account takes deployments offline.
+
+## Branch protection
+
+`deployable` is the demo branch. GitHub Actions (`.github/workflows/ci.yml`) runs on every push and on every pull request into `main` or `deployable`. The three checks are `api-tests`, `ui-tests`, and `structure`. Replit imports `deployable` from GitHub, so a green merge is the deploy. Nothing should merge until those checks pass. GitHub will not enforce that until the branch rule is on, and this account cannot turn the rule on through the API. After the workflow has run once, turn it on:
+
+1. Open [the-ai-guy-2k/tree_map](https://github.com/the-ai-guy-2k/tree_map).
+2. **Settings → Branches → Add rule**.
+3. Branch name pattern: `deployable`.
+4. Turn on **Require a pull request before merging**.
+5. Turn on **Require status checks to pass before merging**.
+6. In the status-check search box, add `api-tests`, `ui-tests`, and `structure`.
+7. Save changes.
+
+If those three names are missing from the search box, open a pull request so Actions can run once, then come back and add them.
 
 ## Features
 
@@ -67,6 +83,8 @@ tree_map/
 ├── seed.json        # Seed dataset (first run only)
 ├── package.json
 ├── .replit          # Replit run command
+├── .github/workflows/ci.yml
+├── tests/           # API suite, Playwright UI suite, structure checks
 ├── data/            # SQLite database lives here (gitignored)
 └── public/
     ├── index.html   # App shell
