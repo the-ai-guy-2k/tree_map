@@ -34,6 +34,7 @@ async function main() {
     process.env.SERVER_PID_FILE = process.env.SERVER_PID_FILE || `${process.env.TREE_DB}.pid`;
     process.env.KEEP_SERVER = '1';
     fs.rmSync(process.env.TREE_DB, { force: true });
+    delete process.env.SHARED_JSON_PATH;
     ensureIsolatedEnv();
     startServer();
     await waitForHealth();
@@ -42,7 +43,7 @@ async function main() {
   let status = 0;
   try {
     if (scope === 'api' || scope === 'all') {
-      const api = spawn(process.execPath, ['--test', '--test-concurrency=1', 'tests/api.test.js'], {
+      const api = spawn(process.execPath, ['--test', '--test-concurrency=1', 'tests/api.test.js', 'tests/sync.test.js'], {
         cwd: root,
         env: process.env,
         stdio: 'inherit',

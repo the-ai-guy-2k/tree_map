@@ -20,6 +20,27 @@ Open http://localhost:3000
 The database is created on first run at `data/tree.db` and seeded from `seed.json`
 (the seed only runs when the database is empty — your edits are never overwritten).
 
+## Shared JSON
+
+Edit locally, save, then press **Sync**. The tree is written to `TAIG-Tree-Map.json` on the Kobe shared drive. Muse reads that file every 15 minutes and can write it back. SQLite remains the local store of record. The JSON file is only the interchange.
+
+`SHARED_JSON_PATH` is the full path to that file. **The default is unset (empty), so sync stays off** until you point it at the Drive folder on this machine. Google Drive for Desktop mounts the Kobe folder at a different path on each computer.
+
+```bash
+# bash
+SHARED_JSON_PATH="/path/to/Kobe/TAIG-Tree-Map.json" npm start
+
+# Windows PowerShell
+$env:SHARED_JSON_PATH = "G:\Shared drives\Kobe\TAIG-Tree-Map.json"
+npm start
+```
+
+On startup, if that file exists and its `meta.exportedAt` is newer than the database's last write, the app imports it. Rows are matched by bubble id. A repeated id keeps the entry with the latest `touched`; if those dates are equal, it keeps the fuller note. The import upserts. It does not delete local bubbles that are absent from the file, and it does not create bubbles that are not in the file.
+
+**Sync** writes schema v1 with `exportedBy` set to `app` and a new `exportedAt`. The only bubble fields in the file are `id`, `label`, `sub`, `branch`, `parentId`, `touched`, `note`, and `status`.
+
+Last writer wins. Do not edit the tree in the app and in Muse inside the same 15-minute window. On the next startup, the newer `exportedAt` (compared with the local last write) is the copy that sticks.
+
 ## Deploy to Replit
 
 Import from GitHub → select repo → branch `deployable` → Run.
@@ -62,6 +83,7 @@ If those three names are missing from the search box, open a pull request so Act
   - Fold / unfold branches
 - TODAY tags: computed from each bubble's last-touched date vs the viewer's date —
   they clear on their own each day. Any edit marks the bubble touched today.
+- Sync writes the tree to the shared JSON file (`SHARED_JSON_PATH`) for Muse's 15-minute pickup.
 - `GET /api/export` — full JSON backup of the tree.
 
 ## API
@@ -73,6 +95,7 @@ If those three names are missing from the search box, open a pull request so Act
 | PATCH | `/api/bubbles/:id` | `{label, sub, branch, status, note, parent_id, touched}` — any edit stamps `touched` = today |
 | DELETE | `/api/bubbles/:id` | Deletes the bubble and its subtree (Nebula is protected) |
 | GET | `/api/export` | JSON backup download |
+| POST | `/api/sync` | Write schema v1 to `SHARED_JSON_PATH` |
 | GET | `/api/health` | Health check |
 
 ## Project layout

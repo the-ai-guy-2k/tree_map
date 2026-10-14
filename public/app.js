@@ -1055,6 +1055,14 @@ function bind() {
     foldToHubs();
     relayout({ fit: true });
   });
+  document.getElementById('sync').addEventListener('click', async () => {
+    try {
+      const meta = await api('/api/sync', { method: 'POST' });
+      toast(`Synced ${meta.bubbleCount}`);
+    } catch (err) {
+      toast(err.message || 'Couldn’t sync');
+    }
+  });
   search.addEventListener('input', () => {
     state.query = search.value;
     relayout();
